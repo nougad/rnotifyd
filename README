@@ -1,0 +1,47 @@
+This project is an replace to the original notification-daemon[1]. Instead of
+flashing a popup this daemon can easily changed into specific behavior. At
+the moment it will forward notifications to wmii[2].
+
+
+TODOS:
+
+  * make script more generic
+  * add support for possible features of specification[3]
+    * Markup
+    * Actions
+    * Hints (category, urgency level, icon data, sound, desktop entry, ...)
+    * Expiration Timeout
+  * replacing existing items
+  * feedback from wmii (actions, dismiss item, expire item, ...)
+
+  Not everything of these items makes sense in context of minimalism but some
+  sugar such as actions would be nice.
+
+  IDEAS: Right click to status button will dismiss it. Left click will open
+  a popup with icon data or buttons for actions.
+
+
+SUBMODULE:
+
+  This Project requires the current version of ruby-dbus[4]. Only tested with
+  version 0.3.0.
+
+  It is required to initialize this subproject once:
+  $ git submodule init
+
+  Update it with:
+  $ git submodule update
+
+INSTALL:
+
+  Add/change service file for org.freedesktop.Notifications and copy rnotify.rb
+  to /usr/libexec/rnotifyd.rb. DBus will call the script automatically
+  if necessary.
+
+LINKS:
+
+  [1]: http://www.galago-project.org/
+  [2]: http://wmii.suckless.org/
+  [3]: http://www.galago-project.org/specs/notification/0.9/index.html
+  [4]: http://github.com/mvidner/ruby-dbus
+
