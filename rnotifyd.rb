@@ -69,7 +69,7 @@ end
 config = {
   :expiretime => 3,
   :capabilities => [
-  # "actions",
+    "actions",
     "body",
   # "body-hyperlinks",
   # "body-images",
