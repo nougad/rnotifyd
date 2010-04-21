@@ -17,9 +17,15 @@ TODOS:
   Not everything of these items makes sense in context of minimalism but some
   sugar such as actions would be nice.
 
-  IDEAS: Right click to status button will dismiss it. Left click will open
-  a popup with icon data or buttons for actions.
+  IDEA1: Right click to status button will dismiss it. Left click will open
+          a popup with icon data or buttons for actions.
 
+  IDEA2: Replace complete wmii bar with notification. Show message in lbar
+          and buttons in rbar.
+
+BUGS:
+
+  * Sometimes the daemon hangs and can only killed with a SIGKILL.
 
 SUBMODULE:
 
