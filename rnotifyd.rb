@@ -27,7 +27,7 @@ class NotifyDaemon < DBus::Object
       id = @last_id
       @opened[id] = Thread.new do
         open_notification *params
-        sleep EXPIRETIME
+        sleep @config[:expiretime]
         close_notification id, EXPIRED if @opened[id]
       end
       id
