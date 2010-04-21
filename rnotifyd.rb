@@ -16,7 +16,7 @@ class NotifyDaemon < DBus::Object
     @bus = DBus.session_bus
     @config = config
     service = @bus.request_service "org.freedesktop.Notifications"
-    service.export self 
+    service.export self
   end
 
   dbus_interface "org.freedesktop.Notifications" do
@@ -30,7 +30,7 @@ class NotifyDaemon < DBus::Object
         sleep EXPIRETIME
         close_notification id, EXPIRED if @opened[id]
       end
-      id 
+      id
     end
     dbus_method :CloseNotification, "in id:u" do |*params|
       puts "CloseNotification #{params.inspect}" if $DEBUG
@@ -60,9 +60,9 @@ class NotifyDaemon < DBus::Object
     system "echo 'Notice #{summary} #{body}' | wmiir write /event"
   end
   def start
-    main = DBus::Main.new  
-    main << @bus  
-    main.run  
+    main = DBus::Main.new
+    main << @bus
+    main.run
   end
 end
 
@@ -70,7 +70,7 @@ config = {
   :expiretime => 3,
   :capabilities => [
   # "actions",
-   "body",
+    "body",
   # "body-hyperlinks",
   # "body-images",
   # "body-markup",
