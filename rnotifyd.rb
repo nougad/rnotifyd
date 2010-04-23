@@ -84,9 +84,9 @@ class NotifyDaemon < DBus::Object
       end
       return id
     end
-    dbus_method :CloseNotification, "in id:u" do |*params|
-      puts "CloseNotification #{params.inspect}" if $DEBUG
-      close_notification @last_id, CLOSED
+    dbus_method :CloseNotification, "in id:u" do |id|
+      puts "CloseNotification #{id}" if $DEBUG
+      close_notification id, CLOSED
     end
     dbus_method :GetCapabilities, "out return_caps:as" do |*params|
       puts "GetCapabilities #{params.inspect}" if $DEBUG
