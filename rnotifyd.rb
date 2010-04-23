@@ -47,7 +47,7 @@ private
         end # else -> execute next job
         @mutex.synchronize do
           job = @jobs.first
-          if Time.now >= job.time
+          if !job.nil? and Time.now >= job.time
             job.receiver.send(job.action, *job.params)
             @jobs.delete job
           end
