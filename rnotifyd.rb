@@ -137,7 +137,8 @@ config = {
     :version => "0.02",
     :spec   => "0.9",
   },
-  :bus => DBus.session_bus
+  :bus => DBus.session_bus,
+  :dispatcher => Dispatcher.new
 }
 
 NotifyDaemon.new(config).start
