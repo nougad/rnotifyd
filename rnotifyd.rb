@@ -135,7 +135,7 @@ config = {
   :serverinfos => {
     :name    => "rnotifyd",
     :vendor  => "nougad",
-    :version => "0.02",
+    :version => "0.03",
     :spec   => "0.9",
   },
   :bus => DBus.session_bus,
