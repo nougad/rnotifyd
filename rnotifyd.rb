@@ -96,15 +96,14 @@ class NotifyDaemon < DBus::Object
       puts "GetServerInformation #{params.inspect}" if $DEBUG
       return [@config[:serverinfos][:name], @config[:serverinfos][:vendor], @config[:serverinfos][:version], @config[:serverinfos][:spec]]
     end
+    dbus_signal :NotificationClosed, "id:u, reason:u"
+    dbus_signal :ActionInvoked, "id:u, action_key:s"
   end
 
-  def action_invoked id, action_key
-    dbus_signal :ActionInvoked, "#{id}:u", "#{action_key}:s"
-  end
   def close_notification id, reason
     if @opened[id]
       @opened.delete(id).kill
-      dbus_signal :NotificationClosed, "#{id}:u", "#{reason}:u"
+      NotificationClosed, id, reason
     end
   end
 
