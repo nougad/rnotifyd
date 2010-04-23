@@ -75,7 +75,7 @@ class NotifyDaemon < DBus::Object
   def initialize config
     super "/org/freedesktop/Notifications"
     @last_id = 0
-    @opened = Hash.new
+    # config should be read-only - no need for synchronization
     @config = config
     service = config[:bus].request_service "org.freedesktop.Notifications"
     service.export self
@@ -86,16 +86,15 @@ class NotifyDaemon < DBus::Object
       puts "Notify: #{params.inspect}" if $DEBUG
       id = @last_id += 1
       timeout = (params[7] > 0) ? params[7] : @config[:expiretime]
-      @opened[id] = Thread.new do
-        open_notification *params
-        sleep timeout
-        close_notification id, EXPIRED if @opened[id]
-      end
+      timeout = Time.now + timeout
+      @config[:dispatcher].execute_job  Job.new(id, self, Time.now, :open_notification, params)
+      @config[:dispatcher].add_job      Job.new(id, self, timeout, :NotificationClosed, [id, EXPIRED])
       return id
     end
     dbus_method :CloseNotification, "in id:u" do |id|
       puts "CloseNotification #{id}" if $DEBUG
-      close_notification id, CLOSED
+      @config[:dispatcher].delete_job id, :NotificationClosed
+      @config[:dispatcher].execute_job Job.new(id, self, Time.now, :NotificationClosed, [id, CLOSED])
     end
     dbus_method :GetCapabilities, "out return_caps:as" do |*params|
       puts "GetCapabilities #{params.inspect}" if $DEBUG
@@ -107,13 +106,6 @@ class NotifyDaemon < DBus::Object
     end
     dbus_signal :NotificationClosed, "id:u, reason:u"
     dbus_signal :ActionInvoked, "id:u, action_key:s"
-  end
-
-  def close_notification id, reason
-    if @opened[id]
-      @opened.delete(id).kill
-      NotificationClosed, id, reason
-    end
   end
 
   def open_notification app_name, id, icon, summary, body, actions, hints, timeout
