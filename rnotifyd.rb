@@ -76,9 +76,10 @@ class NotifyDaemon < DBus::Object
     dbus_method :Notify, "in app_name:s, in id:u, in icon:s, in summary:s, in body:s, in actions:as, in hints:a{sv}, in timeout:i, out return_id:u" do |*params|
       puts "Notify: #{params.inspect}" if $DEBUG
       id = @last_id += 1
+      timeout = (params[7] > 0) ? params[7] : @config[:expiretime]
       @opened[id] = Thread.new do
         open_notification *params
-        sleep @config[:expiretime]
+        sleep timeout
         close_notification id, EXPIRED if @opened[id]
       end
       return id
