@@ -1,8 +1,62 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__),"ruby-dbus","lib"))
 require 'dbus'
+require 'thread'
 
-# TODO make it thread save?
+class Job < Struct.new(:receiver, :time, :action, :params)
+  def <=>; o time <=> o.time; end
+end
+class Dispatcher
+  def initialize
+    @mutex = Mutex.new
+    @jobs = Array.new
+    start
+  end
+
+  def add_job job
+    @mutex.synchronize do
+      @jobs << job
+      @jobs.sort!
+    end
+    @d.wakeup
+  end
+  def delete_job job
+    @mutex.synchronize do
+      @jobs.delete job
+    end
+  end
+  def execute_job job
+    @mutex.synchronize do
+      job.receiver.send(job.action, *job.params)
+    end
+  end
+  def next_job
+    @mutex.synchronize do
+      @jobs.first
+    end
+  end
+private
+  def start
+    @d = Thread.new do
+      loop do
+        job = next_job
+        if job and (intervall = job.time - Time.now) > 0
+          sleep intervall
+        elsif job.nil?
+          sleep
+        end # else -> execute next job
+        @mutex.synchronize do
+          job = @jobs.first
+          if Time.now >= job.time
+            job.receiver.send(job.action, *job.params)
+            @jobs.delete job
+          end
+        end
+      end
+    end
+  end
+end
+
 class NotifyDaemon < DBus::Object
   EXPIRED   = 1 # The notification expired.
   DISMISSED = 2 # The notification was dismissed by the user.
