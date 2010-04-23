@@ -75,8 +75,7 @@ class NotifyDaemon < DBus::Object
   dbus_interface "org.freedesktop.Notifications" do
     dbus_method :Notify, "in app_name:s, in id:u, in icon:s, in summary:s, in body:s, in actions:as, in hints:a{sv}, in timeout:i, out return_id:u" do |*params|
       puts "Notify: #{params.inspect}" if $DEBUG
-      @last_id += 1
-      id = @last_id
+      id = @last_id += 1
       @opened[id] = Thread.new do
         open_notification *params
         sleep @config[:expiretime]
