@@ -75,7 +75,6 @@ class NotifyDaemon < DBus::Object
   dbus_interface "org.freedesktop.Notifications" do
     dbus_method :Notify, "in app_name:s, in id:u, in icon:s, in summary:s, in body:s, in actions:as, in hints:a{sv}, in timeout:i, out return_id:u" do |*params|
       puts "Notify: #{params.inspect}" if $DEBUG
-      # TODO replace old notification if id is set
       @last_id += 1
       id = @last_id
       @opened[id] = Thread.new do
@@ -110,8 +109,10 @@ class NotifyDaemon < DBus::Object
   end
 
   def open_notification app_name, id, icon, summary, body, actions, hints, timeout
+    # TODO replace old notification if id is set
     system "echo 'Notice #{summary} #{body}' | wmiir write /event"
   end
+
   def start
     main = DBus::Main.new
     main << @config[:bus]
