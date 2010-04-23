@@ -67,9 +67,8 @@ class NotifyDaemon < DBus::Object
     super "/org/freedesktop/Notifications"
     @last_id = 0
     @opened = Hash.new
-    @bus = DBus.session_bus
     @config = config
-    service = @bus.request_service "org.freedesktop.Notifications"
+    service = config[:bus].request_service "org.freedesktop.Notifications"
     service.export self
   end
 
@@ -115,7 +114,7 @@ class NotifyDaemon < DBus::Object
   end
   def start
     main = DBus::Main.new
-    main << @bus
+    main << @config[:bus]
     main.run
   end
 end
@@ -137,7 +136,8 @@ config = {
     :vendor  => "nougad",
     :version => "0.02",
     :spec   => "0.9",
-  }
+  },
+  :bus => DBus.session_bus
 }
 
 NotifyDaemon.new(config).start
