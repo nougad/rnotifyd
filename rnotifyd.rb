@@ -20,9 +20,18 @@ class Dispatcher
     end
     @d.wakeup
   end
-  def delete_job job
+  def delete_job job_or_id, action=nil
     @mutex.synchronize do
-      @jobs.delete job
+      if action == nil
+        job = job_or_id
+        raise "no job given" if job != Job
+        @jobs.delete job
+      else
+        id = job_or_id
+        @jobs.delete_if do |job|
+          job.id == id and (action.nil? or job.action == action)
+        end
+      end
     end
   end
   def execute_job job
