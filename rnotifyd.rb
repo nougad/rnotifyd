@@ -3,7 +3,7 @@ $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__),"ruby-dbus","lib
 require 'dbus'
 require 'thread'
 
-class Job < Struct.new(:receiver, :time, :action, :params)
+class Job < Struct.new(:id, :receiver, :time, :action, :params)
   def <=>; o time <=> o.time; end
 end
 class Dispatcher
