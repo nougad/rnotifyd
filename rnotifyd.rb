@@ -83,7 +83,7 @@ class NotifyDaemon < DBus::Object
         sleep @config[:expiretime]
         close_notification id, EXPIRED if @opened[id]
       end
-      id
+      return id
     end
     dbus_method :CloseNotification, "in id:u" do |*params|
       puts "CloseNotification #{params.inspect}" if $DEBUG
@@ -91,11 +91,11 @@ class NotifyDaemon < DBus::Object
     end
     dbus_method :GetCapabilities, "out return_caps:as" do |*params|
       puts "GetCapabilities #{params.inspect}" if $DEBUG
-      [@config[:capabilities]]
+      return [@config[:capabilities]]
     end
     dbus_method :GetServerInformation, "out return_name:s, out return_vendor:s, out return_version:s, out return_spec_version:s" do |*params|
       puts "GetServerInformation #{params.inspect}" if $DEBUG
-      [@config[:serverinfos][:name], @config[:serverinfos][:vendor], @config[:serverinfos][:version], @config[:serverinfos][:spec]]
+      return [@config[:serverinfos][:name], @config[:serverinfos][:vendor], @config[:serverinfos][:version], @config[:serverinfos][:spec]]
     end
   end
 
