@@ -30,13 +30,7 @@ BUGS:
 SUBMODULE:
 
   This Project requires the current version of ruby-dbus[4]. Only tested with
-  version 0.3.0.
-
-  It is required to initialize this subproject once:
-  $ git submodule init
-
-  Update it with:
-  $ git submodule update
+  version 0.3.0 and 0.5.0.
 
 INSTALL:
 
