@@ -5,7 +5,7 @@ require 'pp'
 bus = DBus::SessionBus.instance
 service = bus.service("org.freedesktop.Notifications")
 notify = service.object("/org/freedesktop/Notifications")
-notify.default_iface = "org.freedesktop.Notifications" 
+notify.default_iface = "org.freedesktop.Notifications"
 
 puts "---------- service xml ----------"
 puts notify.introspect
@@ -49,6 +49,6 @@ sleep 1
 puts "try to close notification"
 iface.CloseNotification id.first
 
-main = DBus::Main.new  
-main << bus  
-main.run  
+main = DBus::Main.new
+main << bus
+main.run
